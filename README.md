@@ -81,21 +81,54 @@ Frontend views (templates not included in this repo, assumed under Django templa
 
 ---
 
-## How to Run
+## How to Run (Local)
 
 1. **Install requirements:**
    ```bash
-   pip install django scikit-learn pandas matplotlib seaborn catboost tensorflow joblib
+   pip install -r requirements.txt
    ```
 
 2. **Run Django migrations and start server:**
    ```bash
+   export DEBUG=True
+   export SECRET_KEY=dev-only-secret-key
    python manage.py migrate
    python manage.py runserver
    ```
 3. **Navigate to** `http://127.0.0.1:8000/` and register a new user.
 
 4. **Upload your CSV data** at the `/upload` endpoint and follow on-screen instructions to train and evaluate models.
+
+---
+
+## Deploy on Railway
+
+This repository now includes Railway-ready deployment files:
+
+- `Procfile` (Gunicorn start command)
+- `requirements.txt`
+- `runtime.txt`
+- `.env.example` (required environment variables)
+
+### Railway setup
+
+1. Create a new Railway project and connect this repository.
+2. Add a **PostgreSQL** service in Railway.
+3. Set the following environment variables in Railway:
+   - `DEBUG=False`
+   - `SECRET_KEY=<strong-random-value>`
+   - `ALLOWED_HOSTS=.up.railway.app,<your-domain>`
+   - `DATABASE_URL` (from Railway PostgreSQL)
+4. Deploy. Railway will start the app with:
+   ```bash
+   gunicorn botnet_attacks.wsgi:application --bind 0.0.0.0:$PORT
+   ```
+5. Run migrations in Railway:
+   ```bash
+   python manage.py migrate
+   ```
+
+> Production mode (`DEBUG=False`) requires both `SECRET_KEY` and `DATABASE_URL`, so deployment does not fall back to SQLite.
 
 ---
 
@@ -166,4 +199,3 @@ Intended for academic and research purposes.
 ## Authors
 
 Developed by [tomato9553-bit](https://github.com/tomato9553-bit)
-
