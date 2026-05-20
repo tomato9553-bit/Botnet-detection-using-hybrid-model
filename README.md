@@ -101,34 +101,43 @@ Frontend views (templates not included in this repo, assumed under Django templa
 
 ---
 
-## Deploy on Railway
+## Deploy on Render
 
-This repository now includes Railway-ready deployment files:
+This repository includes Render-ready deployment files:
 
+- `render.yaml` (Render Blueprint web service + PostgreSQL)
 - `Procfile` (Gunicorn start command)
 - `requirements.txt`
-- `runtime.txt`
 - `.env.example` (required environment variables)
 
-### Railway setup
+### Render setup
 
-1. Create a new Railway project and connect this repository.
-2. Add a **PostgreSQL** service in Railway.
-3. Set the following environment variables in Railway:
+1. Create a new **Blueprint** service in Render and connect this repository.
+2. Apply `render.yaml` so Render creates:
+   - a Python web service
+   - a managed PostgreSQL database
+3. Confirm environment variables:
    - `DEBUG=False`
-   - `SECRET_KEY=<strong-random-value>`
-   - `ALLOWED_HOSTS=.up.railway.app,<your-domain>`
-   - `DATABASE_URL` (from Railway PostgreSQL)
-4. Deploy. Railway will start the app with:
+   - `SECRET_KEY=<strong-random-value>` (auto-generated in `render.yaml`)
+   - `ALLOWED_HOSTS=.onrender.com,<your-custom-domain-if-any>`
+   - `CSRF_TRUSTED_ORIGINS=https://*.onrender.com,https://<your-custom-domain-if-any>`
+   - `DATABASE_URL` (injected from Render PostgreSQL)
+4. Render build command:
+   ```bash
+   pip install -r requirements.txt && python manage.py collectstatic --noinput
+   ```
+5. Render start command:
    ```bash
    gunicorn botnet_attacks.wsgi:application --bind 0.0.0.0:$PORT
    ```
-5. Run migrations in Railway:
+6. Render pre-deploy command:
    ```bash
    python manage.py migrate
    ```
 
 > Production mode (`DEBUG=False`) requires both `SECRET_KEY` and `DATABASE_URL`, so deployment does not fall back to SQLite.
+>
+> The app saves trained model artifacts to the local `model/` directory. Render's filesystem is ephemeral, so model files can be lost after restart/redeploy unless you add persistent storage.
 
 ---
 
