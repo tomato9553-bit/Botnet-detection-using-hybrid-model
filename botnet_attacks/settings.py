@@ -12,26 +12,21 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-local-dev-key")
 if not DEBUG and SECRET_KEY == "django-insecure-local-dev-key":
     raise ImproperlyConfigured("SECRET_KEY must be set when DEBUG=False.")
 
+default_allowed_hosts_value = "localhost,127.0.0.1" if DEBUG else ".onrender.com"
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.environ.get(
-        "ALLOWED_HOSTS",
-        ".up.railway.app,localhost,127.0.0.1",
-    ).split(",")
+    for host in os.environ.get("ALLOWED_HOSTS", default_allowed_hosts_value).split(",")
     if host.strip()
 ]
 
-railway_public_domain = os.environ.get("RAILWAY_PUBLIC_DOMAIN")
-if railway_public_domain:
-    ALLOWED_HOSTS.append(railway_public_domain)
-
 CSRF_TRUSTED_ORIGINS = [
     origin.strip()
-    for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+    for origin in os.environ.get(
+        "CSRF_TRUSTED_ORIGINS",
+        "" if DEBUG else "https://*.onrender.com",
+    ).split(",")
     if origin.strip()
 ]
-if railway_public_domain:
-    CSRF_TRUSTED_ORIGINS.append(f"https://{railway_public_domain}")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
