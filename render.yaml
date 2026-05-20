@@ -22,3 +22,6 @@ services:
 
 databases:
   - name: botnet-detection-db
+    plan: starter
+    databaseName: botnet_detection
+    user: botnet_detection_user
