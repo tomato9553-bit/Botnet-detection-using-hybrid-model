@@ -138,6 +138,7 @@ This repository includes Render-ready deployment files:
 > Production mode (`DEBUG=False`) requires both `SECRET_KEY` and `DATABASE_URL`, so deployment does not fall back to SQLite.
 >
 > The app saves trained model artifacts to the local `model/` directory. Render's filesystem is ephemeral, so model files can be lost after restart/redeploy unless you add persistent storage.
+> For persistence, use a Render Disk (if your plan supports it) or move model artifacts to external object storage such as S3.
 
 ---
 

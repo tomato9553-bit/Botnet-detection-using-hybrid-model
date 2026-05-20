@@ -12,10 +12,10 @@ SECRET_KEY = os.environ.get("SECRET_KEY", "django-insecure-local-dev-key")
 if not DEBUG and SECRET_KEY == "django-insecure-local-dev-key":
     raise ImproperlyConfigured("SECRET_KEY must be set when DEBUG=False.")
 
-default_allowed_hosts_csv = "localhost,127.0.0.1" if DEBUG else ".onrender.com"
+default_allowed_hosts_value = "localhost,127.0.0.1" if DEBUG else ".onrender.com"
 ALLOWED_HOSTS = [
     host.strip()
-    for host in os.environ.get("ALLOWED_HOSTS", default_allowed_hosts_csv).split(",")
+    for host in os.environ.get("ALLOWED_HOSTS", default_allowed_hosts_value).split(",")
     if host.strip()
 ]
 
